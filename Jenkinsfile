@@ -1,12 +1,14 @@
 pipeline {
     agent any
 
-    stages (
-        stage ('VM Node Version') {
-            sh '''
-                node --version
-                npm --version
-            '''
+    stages {
+        stage('VM Node Version') {
+            steps {
+                sh '''
+                    node --version
+                    npm --version
+                '''
+            }
         }
-    )
+    }
 }
