@@ -5,6 +5,10 @@ pipeline {
         nodejs 'Node-24.2.0'
     }
 
+    environment {
+        MONGO_URI = "mongodb+srv://cluster0.41zdfli.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    }
+
     stages {
         stage('VM Node Version') {
             steps {
@@ -47,8 +51,11 @@ pipeline {
         }
         stage('Unit Testing') {
             steps {
+                withCredentials([usernamePassword(credentialsId: 'mongo-db-creds', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) 
                 sh 'npm test'
             }
+            
+            junit allowEmptyResults: true, keepProperties: true, testResults: 'test-results.xml'
         }        
     }
 }
