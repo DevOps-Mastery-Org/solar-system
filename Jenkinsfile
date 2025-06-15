@@ -19,7 +19,7 @@ pipeline {
                 sh 'npm install --no-audit'
             }
         }
-        stage('Auditing Dependencies') {
+        stage('Dependency Scanning') {
             parallel { 
                 stage('NPM Audit') {
                     steps {
@@ -43,6 +43,11 @@ pipeline {
                         publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'dependency-check-jenkins.html', reportName: 'Dependency Check HTML Report', reportTitles: '', useWrapperFileDirectly: true])
                     }
                 }
+            }
+        }
+        stage('Unit Testing') {
+            steps {
+                sh 'npm test'
             }
         }        
     }
