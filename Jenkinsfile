@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'Node-24.2.0'
+    }
+
     stages {
         stage('VM Node Version') {
             steps {
