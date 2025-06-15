@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node app.js",
-    "test": "mocha app-test.js --timeout 10000 --reporter mocha-junit-reporter --exit",
+    "test": "NODE_ENV=test mocha 'test/**/*.test.js' --timeout 10000 --reporter mocha-junit-reporter --exit",
     "coverage": "nyc --reporter cobertura --reporter lcov --reporter text --reporter json-summary  mocha app-test.js --timeout 10000  --exit"
   },
   "nyc": {
@@ -24,8 +24,11 @@
     "serverless-http": "^3.2.0"
   },
   "devDependencies": {
-    "chai": "*",
-    "chai-http": "*",
-    "mocha": "*"
+    "chai": "^4.4.1",
+    "chai-http": "^4.4.0",
+    "dotenv": "^16.4.5",
+    "mocha": "^10.7.3",
+    "mongodb-memory-server": "^10.0.0",
+    "supertest": "^7.1.1"
   }
 }
