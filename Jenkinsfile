@@ -18,11 +18,13 @@ pipeline {
                 '''
             }
         }
+
         stage('Install Dependencies') {
             steps {
                 sh 'npm install --no-audit'
             }
         }
+
         stage('Dependency Scanning') {
             parallel { 
                 stage('NPM Audit') {
@@ -30,6 +32,7 @@ pipeline {
                         sh 'npm audit --audit-level=critical'
                     }
                 }
+
                 stage('OWASP Dependency Check') {
                     steps {
                         dependencyCheck additionalArguments: '''\
@@ -39,23 +42,39 @@ pipeline {
                             --prettyPrint
                         ''',
                         odcInstallation: 'OWASP-DepCheck-12'
-                        
+
                         dependencyCheckPublisher failedTotalCritical: 1, pattern: 'dependency-check-report.xml', stopBuild: true
 
                         junit allowEmptyResults: true, keepProperties: true, testResults: 'dependency-check-junit.xml'
 
-                        publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'dependency-check-jenkins.html', reportName: 'Dependency Check HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                        publishHTML([
+                            allowMissing: true, 
+                            alwaysLinkToLastBuild: true, 
+                            icon: '', 
+                            keepAll: true, 
+                            reportDir: './', 
+                            reportFiles: 'dependency-check-jenkins.html', 
+                            reportName: 'Dependency Check HTML Report', 
+                            reportTitles: '', 
+                            useWrapperFileDirectly: true
+                        ])
                     }
                 }
             }
         }
+
         stage('Unit Testing') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'mongo-db-creds', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) 
-                sh 'npm test'
+                withCredentials([usernamePassword(
+                    credentialsId: 'mongo-db-creds', 
+                    usernameVariable: 'MONGO_USERNAME', 
+                    passwordVariable: 'MONGO_PASSWORD'
+                )]) {
+                    sh 'npm test'
+                }
+
+                junit allowEmptyResults: true, keepProperties: true, testResults: 'test-results.xml'
             }
-            
-            junit allowEmptyResults: true, keepProperties: true, testResults: 'test-results.xml'
-        }        
+        }
     }
 }
