@@ -70,7 +70,7 @@ pipeline {
                     usernameVariable: 'MONGO_USERNAME', 
                     passwordVariable: 'MONGO_PASSWORD'
                 )]) {
-                    sh 'npm test || true'
+                    sh 'npm test'
                 }
 
                 junit allowEmptyResults: true, keepProperties: true, testResults: 'test-results.xml'
