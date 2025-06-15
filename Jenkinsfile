@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        MONGO_URI = "mongodb+srv://cluster0.41zdfli.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+        MONGO_URI = "mongodb+srv://supercluster.d83jj.mongodb.net/superData"
     }
 
     stages {
