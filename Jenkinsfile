@@ -94,7 +94,7 @@ pipeline {
                     alwaysLinkToLastBuild: true, 
                     icon: '', 
                     keepAll: true, 
-                    reportDir: 'coverage/icov-report', 
+                    reportDir: 'coverage/Icov-report', 
                     reportFiles: 'index.html', 
                     reportName: 'Code Coverage HTML Report', 
                     reportTitles: '', 
