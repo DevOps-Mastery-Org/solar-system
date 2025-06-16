@@ -26,6 +26,7 @@ pipeline {
         }
 
         stage('Dependency Scanning') {
+            options { timestamps() }
             parallel { 
                 stage('NPM Audit') {
                     steps {
@@ -64,6 +65,7 @@ pipeline {
         }
 
         stage('Unit Testing') {
+            options { timestamps() }
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'mongo-db-creds', 
