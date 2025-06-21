@@ -7,6 +7,8 @@ pipeline {
 
     environment {
         MONGO_URI = "mongodb+srv://daanielmacdonald:0Jc23Yd3tdc04VKY@cluster0.41zdfli.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+        MONGO_DB_USERNAME = credentials('mongo-db-username')
+        MONGO_DB_PASSWORD = credentials('mongo-db-password')
     }
 
     stages {
@@ -44,21 +46,7 @@ pipeline {
                         ''',
                         odcInstallation: 'OWASP-DepCheck-12'
 
-                        dependencyCheckPublisher failedTotalCritical: 1, pattern: 'dependency-check-report.xml', stopBuild: true
-
-                        junit allowEmptyResults: true, keepProperties: true, testResults: 'dependency-check-junit.xml'
-
-                        publishHTML([
-                            allowMissing: true, 
-                            alwaysLinkToLastBuild: true, 
-                            icon: '', 
-                            keepAll: true, 
-                            reportDir: './', 
-                            reportFiles: 'dependency-check-jenkins.html', 
-                            reportName: 'Dependency Check HTML Report', 
-                            reportTitles: '', 
-                            useWrapperFileDirectly: true
-                        ])
+                        dependencyCheckPublisher failedTotalCritical: 1, pattern: 'dependency-check-report.xml', stopBuild: true 
                     }
                 }
             }
@@ -67,40 +55,41 @@ pipeline {
         stage('Unit Testing') {
             options { timestamps() }
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'mongo-db-creds', 
-                    usernameVariable: 'MONGO_USERNAME', 
-                    passwordVariable: 'MONGO_PASSWORD'
-                )]) {
-                    sh 'npm test'
-                }
-
-                junit allowEmptyResults: true, keepProperties: true, testResults: 'test-results.xml'
+                sh 'npm test'
             }
         }
+
         stage('Code Coverage') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'mongo-db-creds', 
-                    usernameVariable: 'MONGO_USERNAME', 
-                    passwordVariable: 'MONGO_PASSWORD'
-                )]) {
-                    catchError(buildResult: 'SUCCESS', message: 'Opps! This will be resolved in fututre releases', stageResult: 'UNSTABLE') {
-                        sh 'npm run coverage'
-                    }
+                catchError(buildResult: 'SUCCESS', message: 'Oops! This will be resolved in future releases', stageResult: 'UNSTABLE') {
+                    sh 'npm run coverage'
                 }
-                publishHTML([
-                    allowMissing: true, 
-                    alwaysLinkToLastBuild: true, 
-                    icon: '', 
-                    keepAll: true, 
-                    reportDir: 'coverage/lcov-report', 
-                    reportFiles: 'index.html', 
-                    reportName: 'Code Coverage HTML Report', 
-                    reportTitles: '', 
-                    useWrapperFileDirectly: true
-                ])
             }
+        }
+    }
+
+    post {
+        always {
+            junit allowEmptyResults: true, keepProperties: true, testResults: 'dependency-check-junit.xml'
+            junit allowEmptyResults: true, keepProperties: true, testResults: 'test-results.xml'
+
+            publishHTML([
+                allowMissing: true, 
+                alwaysLinkToLastBuild: true,
+                keepAll: true, 
+                reportDir: './', 
+                reportFiles: 'dependency-check-jenkins.html', 
+                reportName: 'Dependency Check HTML Report'
+            ])
+
+            publishHTML([
+                allowMissing: true, 
+                alwaysLinkToLastBuild: true,
+                keepAll: true, 
+                reportDir: 'coverage/lcov-report', 
+                reportFiles: 'index.html', 
+                reportName: 'Code Coverage HTML Report'
+            ])
         }
     }
 }
