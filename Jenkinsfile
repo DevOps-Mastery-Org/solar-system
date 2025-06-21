@@ -73,6 +73,7 @@ pipeline {
                 sh '''
                     $SONAR_SCANNER_HOME/bin/sonar-scanner \
                     -Dsonar.host.url=http://192.168.229.20:9000 \
+                    -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info \
                     -Dsonar.token=sqp_c4903a31079039ee926c28661f1deaa670fba51c \
                     -Dsonar.projectKey=solar-system-project
                 '''      
