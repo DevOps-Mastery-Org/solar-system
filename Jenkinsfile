@@ -9,6 +9,7 @@ pipeline {
         MONGO_URI = "mongodb+srv://daanielmacdonald:0Jc23Yd3tdc04VKY@cluster0.41zdfli.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
         MONGO_DB_USERNAME = credentials('mongo-db-username')
         MONGO_DB_PASSWORD = credentials('mongo-db-password')
+        SONAR_SCANNER_HOME = tool 'sonarqube-scanner-710'
     }
 
     stages {
@@ -64,6 +65,18 @@ pipeline {
                 catchError(buildResult: 'SUCCESS', message: 'Oops! This will be resolved in future releases', stageResult: 'UNSTABLE') {
                     sh 'npm run coverage'
                 }
+            }
+        }
+        stage('SAST - SonarQube Analysis') {
+            steps {
+                sh 'echo $SONAR_SCANNER_HOME'
+                sh '''
+                    $SONAR_SCANNER_HOME/bin/sonar-scanner \
+                        -Dsonar.projectKey=solar-system-project \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=http://localhost:9001 \
+                        -Dsonar.token=sqp_5be14b5d65e4a3b3d400043a77ca73913ec83b88
+                '''      
             }
         }
     }
