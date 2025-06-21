@@ -71,10 +71,10 @@ pipeline {
             steps {
                 sh 'echo $SONAR_SCANNER_HOME'
                 sh '''
-                    $SONAR_SCANNER_HOME/bin/sonar \
-                        -Dsonar.host.url=http://localhost:9001 \
-                        -Dsonar.token=sqp_d9d3b1c68a9cbb0ae107d15b6291fdb5216104b4 \
-                        -Dsonar.projectKey=solar-system-project
+                    $SONAR_SCANNER_HOME/bin/sonar-scanner \
+                    -Dsonar.host.url=http://192.168.229.20:9000 \
+                    -Dsonar.token=sqp_c4903a31079039ee926c28661f1deaa670fba51c \
+                    -Dsonar.projectKey=solar-system-project
                 '''      
             }
         }
