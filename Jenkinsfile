@@ -67,7 +67,7 @@ pipeline {
                 }
             }
         }
-        stage('SAST - SonarQube Analysis') {
+        stage('SAST - SonarQube-Analysis') {
             steps {
                 sh 'echo $SONAR_SCANNER_HOME'
                 sh '''
