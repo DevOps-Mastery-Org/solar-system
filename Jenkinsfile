@@ -72,7 +72,7 @@ pipeline {
                 sh 'echo $SONAR_SCANNER_HOME'
                 sh '''
                     $SONAR_SCANNER_HOME/bin/sonar-scanner \
-                    -Dsonar.sources=app.js \
+                    -Dsonar.sources=./app.js \
                     -Dsonar.host.url=http://192.168.229.20:9000 \
                     -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info \
                     -Dsonar.token=sqp_aa00da45c5edb363aa30994c61b8c132c816a46d \
